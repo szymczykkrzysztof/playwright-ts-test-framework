@@ -1,9 +1,11 @@
-name: PR – Playwright Tests
+name: Playwright Tests & Report
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+
+  push:
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -25,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -34,9 +36,8 @@ jobs:
         run: npx playwright test
         continue-on-error: true
 
-      # IMPORTANT: upload as Pages artifact
       - name: Upload Playwright report for Pages
-        if: always()
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: playwright-report
@@ -45,7 +46,9 @@ jobs:
     name: Publish Playwright Report
     needs: e2e-tests
     runs-on: ubuntu-latest
-    if: always()
+
+    # 🔐 CRITICAL: only main branch may deploy Pages
+    if: github.ref == 'refs/heads/main'
 
     environment:
       name: github-pages
@@ -56,7 +59,7 @@ jobs:
         id: deploy
         uses: actions/deploy-pages@v4
 
-      - name: Add clickable link to summary
+      - name: Add report link to summary
         run: |
           echo "## Playwright HTML Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
