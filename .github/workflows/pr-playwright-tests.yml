@@ -5,11 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   e2e-tests:
     name: Playwright E2E Tests
@@ -34,30 +29,22 @@ jobs:
         run: npx playwright test
         continue-on-error: true
 
-      # IMPORTANT: upload as Pages artifact
-      - name: Upload Playwright report for Pages
+      # === UPLOAD REPORT AS ARTIFACT ===
+      - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: playwright-report
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
-  report:
-    name: Publish Playwright Report
-    needs: e2e-tests
-    runs-on: ubuntu-latest
-    if: always()
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
-
-      - name: Add clickable link to summary
+      # === ADD CLICKABLE LINK TO JOB SUMMARY ===
+      - name: Publish report link
+        if: always()
         run: |
-          echo "## Playwright HTML Report" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 Playwright Test Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 **Report URL:** ${{ steps.deploy.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "⬇️ **Download HTML report:**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Go to **Artifacts → playwright-report**" >> $GITHUB_STEP_SUMMARY
+          echo "- Unzip and open **index.html** locally" >> $GITHUB_STEP_SUMMARY
