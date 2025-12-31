@@ -1,7 +1,7 @@
 # Playwright test automation framework in typescript
 Test automation framework for https://www.saucedemo.com web application implemented in typescript.
 
-A modern **Playwright automation framework** built in **TypeScript**, designed for reliable end-to-end UI testing and scalable automation. This framework uses best practices like the **Page Object Model (POM)**, typed fixtures, environment configuration, and CI/CD readiness.
+A modern **Playwright automation framework** built in **TypeScript**, designed for reliable end-to-end UI testing and scalable automation. This framework uses best practices like the **Page Object Model (POM)**, typed fixtures, environment configuration, and CI/CD readiness. This framework is fully integrated with GitHub Actions and executes Playwright tests on every push and pull request.
 
 It’s suitable for writing clear, maintainable automated tests using Playwright’s powerful TypeScript support.
 
